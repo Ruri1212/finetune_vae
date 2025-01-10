@@ -4,7 +4,13 @@
 
 ネットを検索しても、使いやすそうなものがなかったので自作しました。（超初心者が記述していものなので、中身の修正点がありましたら教えていただきたいです。）
 
-> 参考にしたサイト：https://github.com/kukaiN/vae_finetune
+> 参考にしたサイト
+
+> https://github.com/kukaiN/vae_finetune
+
+> https://github.com/johannakarras/DreamPose/blob/main/finetune-vae.py
+
+> https://github.com/zhuliyi0/fine-tune-vae
 
 実行環境としては、GPUメモリが24GBあれば、画像(1024*1024)でバッチサイズ1で学習ができました。
 コードをいじればもっとメモリ容量を減らすことができると思います。
