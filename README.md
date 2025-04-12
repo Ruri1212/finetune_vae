@@ -19,7 +19,7 @@
 ```
 (python 3.10以降)
 pip install -r requirements.txt
-accelerate launch --num_processes=1 train_vae.py --xformers --gradient_checkpointing
+python train_decoder_vae.py --xformers --gradient_checkpointing
 ```
 
 ### ディレクトリ構造の説明
