@@ -94,10 +94,10 @@ def main(args):
 
     # 2) データセットとデータローダーの作成
     transform = transforms.Compose([
-        v2.Resize(args.resolution, interpolation=v2.InterpolationMode.BILINEAR),
-        v2.RandomCrop(args.crop_size),
+        v2.Resize((1024, 960), interpolation=v2.InterpolationMode.BILINEAR),
+        # v2.RandomCrop(args.crop_size),
         transforms.ToTensor(),
-        v2.Normalize([0.5], [0.5]),
+        transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
     ])
     train_dataset = SimpleImageDataset(
         txt_file_path=args.train_image_path,
@@ -106,16 +106,8 @@ def main(args):
     train_dataloader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, pin_memory=True)
     print(f"Size of train_dataloader: {len(train_dataloader)}")
 
-    # 3) VAEモデル読み込み
-    vae = AutoencoderKL.from_pretrained(args.pretrained_model_name_or_path)
+    vae = AutoencoderKL.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0", subfolder="vae")
 
-    # xFormers があるなら有効化
-    if args.xformers:
-        try:
-            vae.enable_xformers_memory_efficient_attention()
-            print("Enabled xFormers memory efficient attention for VAE.")
-        except Exception as e:
-            print(f"Failed to enable xFormers: {e}")
 
     # gradient checkpointing を有効に
     if args.gradient_checkpointing:
@@ -172,6 +164,7 @@ def main(args):
             # Reconstruction Image の保存
             if step % 10 == 0:                       
                 recon_img_cpu = recon_images[0].detach().float()
+                recon_img_cpu = (recon_img_cpu + 1.0) / 2.0
                 recon_img_cpu = torch.clamp(recon_img_cpu, 0.0, 1.0)
                 pil_img = transforms.ToPILImage()(recon_img_cpu.cpu())
                 os.makedirs("recon_samples", exist_ok=True)
